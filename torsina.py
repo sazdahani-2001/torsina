@@ -5,23 +5,22 @@ import shutil
 
 torrc_path = '/etc/tor/torrc'
 valid_country_codes = {
-        'tr': 'Turkey', 
-        'de': 'Germany', 
-        'us': 'United States', 
-        'fr': 'France', 
-        'uk': 'United Kingdom',
-        'at': 'Austria', 
-        'be': 'Belgium', 
-        'ro': 'Romania', 
-        'ca': 'Canada', 
-        'sg': 'Singapore',
-        'jp': 'Japan', 
-        'ie': 'Ireland', 
-        'fi': 'Finland', 
-        'es': 'Spain', 
-        'pl': 'Poland'
-    }
-
+    'tr': 'Turkey', 
+    'de': 'Germany', 
+    'us': 'United States', 
+    'fr': 'France', 
+    'uk': 'United Kingdom',
+    'at': 'Austria', 
+    'be': 'Belgium', 
+    'ro': 'Romania', 
+    'ca': 'Canada', 
+    'sg': 'Singapore',
+    'jp': 'Japan', 
+    'ie': 'Ireland', 
+    'fi': 'Finland', 
+    'es': 'Spain', 
+    'pl': 'Poland'
+}
 
 def clear_screen():
     os.system("clear")
@@ -68,10 +67,10 @@ def uninstall_tor():
     print("Uninstalling Tor ...\n")
     try:
         subprocess.run(['sudo', 'apt', 'remove', '-y', 'tor'], check=True)
-        print("Tor has been uninsalled successfully.")
+        print("Tor has been uninstalled successfully.")
         input("Press Enter to continue")
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while uninsalling Tor: {e}")
+        print(f"An error occurred while uninstalling Tor: {e}")
         input("Press Enter to continue")
 
 def update_tor():
@@ -90,14 +89,13 @@ def update_tor():
             if _X.lower() in ['y', '']:
                 install_tor()
 
-        
         input("Press Enter to continue")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
 
 def show_numbers():
     tor_status = check_tor()
-    if(tor_status):
+    if tor_status:
         tor = True
     else:
         tor = False
@@ -111,20 +109,13 @@ def show_numbers():
     else:
         print(" \033[0;36mTor: \033[0;31mNot installed")
 
-    
     socks_port, countries = read_torrc(torrc_path)
-    if(socks_port == None):
+    if socks_port is None:
         socks_port = 9050
     print(f" \033[0;36mYour Tor Server: \033[0;33m127.0.0.1:{socks_port}\033[0m")
     print(f" \033[0;36mYour Tor Countries: \033[0;33m{countries}\033[0m")
-    # if get_server_location() != None:
-    #     country, ip = get_server_location()
-    #     print(f" \033[0;36mServer Location: \033[0m{country}")
-    #     print(f" \033[0;36mServer IP: \033[0m{ip}")
-
     print("\033[0;33m═════════════════════════════════════════════\033[0m\n")
 
-    
     if tor:
         print(" \033[1;32m1 -\033[0m install tor (" + "\033[1;32minstalled\033[0m)")
     else:
@@ -158,10 +149,10 @@ def check_tor():
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
         return False
-            
+
 def modify_torrc(file_path, new_socks_port=None, new_exit_nodes=None):
     try:
-        if(check_tor()):
+        if check_tor():
             with open(file_path, 'r') as file:
                 lines = file.readlines()
 
@@ -208,7 +199,7 @@ def modify_torrc(file_path, new_socks_port=None, new_exit_nodes=None):
 
 def read_torrc(file_path):
     try:
-        if(check_tor()):
+        if check_tor():
             with open(file_path, 'r') as file:
                 lines = file.readlines()
             
@@ -237,14 +228,14 @@ def read_torrc(file_path):
         print(f"An error occurred: {e}")
 
 def reload_tor():
-    if(check_tor()):
+    if check_tor():
         os.system("service tor reload")
     else:
         print("\033[31mTor is not installed.\033[0m\nPlease install it first.")
 
 def restart_tor():
     print("\n")
-    if(check_tor()):
+    if check_tor():
         try:
             subprocess.run(['sudo', 'systemctl', 'restart', 'tor'], check=True)
         except subprocess.CalledProcessError as e:
@@ -254,7 +245,7 @@ def restart_tor():
 
 def start_tor():
     print("\n")
-    if(check_tor()):
+    if check_tor():
         try:
             subprocess.run(['sudo', 'systemctl', 'start', 'tor'], check=True)
         except subprocess.CalledProcessError as e:
@@ -264,7 +255,7 @@ def start_tor():
 
 def stop_tor():
     print("\n")
-    if(check_tor()):
+    if check_tor():
         try:
             subprocess.run(['sudo', 'systemctl', 'stop', 'tor'], check=True)
         except subprocess.CalledProcessError as e:
@@ -274,7 +265,7 @@ def stop_tor():
 
 def status_tor():
     print("\n")
-    if(check_tor()):
+    if check_tor():
         try:
             result = subprocess.run(['sudo', 'systemctl', 'status', 'tor'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             print("Tor status:")
@@ -283,7 +274,6 @@ def status_tor():
             print(f"Tor is stopped.\n{e.stderr}")
     else:
         print("\033[31mTor is not installed.\033[0m\nPlease install it first.")
-
 
 def create_cron_job():
     while True:
@@ -361,13 +351,12 @@ def create_cron_job():
     subprocess.run(['crontab', 'temp_cron'])
     subprocess.run(['rm', 'temp_cron'])
 
-
 def get_tor_ip(port=None):
     try:
-        if(check_tor()):
-            if(port == None):
+        if check_tor():
+            if port is None:
                 socks_port, countries = read_torrc(torrc_path)
-                if(socks_port == None):
+                if socks_port is None:
                     port = 9050
                 else:
                     port = socks_port
@@ -386,7 +375,6 @@ def get_tor_ip(port=None):
     except requests.RequestException as e:
         print(f"An error occurred while trying to get the IP: {e}")
         return None
-
 
 def check_portNumber(port):
     port = int(port)
@@ -408,9 +396,8 @@ def update_tor_country():
         return False
     else:
         #return output_string
-        modify_torrc(torrc_path,new_exit_nodes=output_string)
+        modify_torrc(torrc_path, new_exit_nodes=output_string)
         print(f"ExitNodes has been updated successfully with {output_string}")
-
 
 def get_server_location():
     try:
@@ -425,19 +412,6 @@ def get_server_location():
     except requests.exceptions.RequestException as e:
         return None
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 def main():
     while True:
         clear_screen()
@@ -446,79 +420,72 @@ def main():
         
         # Get Input Number
         choise = input("Enter Your Choice [1-13]:")
-        # Check input number
-        match choise:
-            case "0":
-                clear_screen()
-                break
-            case "1":
-                install_tor()
-
-            case "2":
-                update_tor()
-
-            case "3":
-                uninstall_tor()
-            case "4":
-                node_ip = get_tor_ip()
-                print(f"Tor Server IP: {node_ip}")
-                input("press Enter to continue")
-            case "5":
-                create_cron_job()
-            case "6":
-                reload_tor()
-                restart_tor()
-                print("Your Tor ip has been changed.")
-                input("Press Enter to continue...")
-            
-            case "7":
+        
+        # Check input number using if-elif-else instead of match
+        if choise == "0":
+            clear_screen()
+            break
+        elif choise == "1":
+            install_tor()
+        elif choise == "2":
+            update_tor()
+        elif choise == "3":
+            uninstall_tor()
+        elif choise == "4":
+            node_ip = get_tor_ip()
+            print(f"Tor Server IP: {node_ip}")
+            input("Press Enter to continue")
+        elif choise == "5":
+            create_cron_job()
+        elif choise == "6":
+            reload_tor()
+            restart_tor()
+            print("Your Tor IP has been changed.")
+            input("Press Enter to continue...")
+        elif choise == "7":
+            port = input("Enter Your Tor Port: ")
+            check = False
+            while True:
+                if not port.isdigit():
+                    print("Your input is \033[1;31mnot valid\033[0m...")
+                elif check_portNumber(port) == False:
+                    print(f"Port {port} is \033[1;31mBusy\033[0m...")
+                else:
+                    break  
                 port = input("Enter Your Tor Port: ")
-                check = False
-                while True:
-                    if not port.isdigit():
-                        print("Your input is \033[1;31mnot valid\033[0m...")
-                    elif check_portNumber(port) == False:
-                        print(f"Port {port} is \033[1;31mBusy033[0m...")
-                    else:
-                        break  
-                    port = input("Enter Your Tor Port: ")
 
-                modify_torrc(torrc_path, new_socks_port=str(port))
-                reload_tor()
-                restart_tor()
-                input("Your port has been change\nPress Enter to continue....")
-            case "8":
-                print("You can use these Countries:")
-                for code, country in valid_country_codes.items():
-                    print(f"{country} -> \033[0;32m{code}\033[0m")
+            modify_torrc(torrc_path, new_socks_port=str(port))
+            reload_tor()
+            restart_tor()
+            input("Your port has been changed\nPress Enter to continue....")
+        elif choise == "8":
+            print("You can use these Countries:")
+            for code, country in valid_country_codes.items():
+                print(f"{country} -> \033[0;32m{code}\033[0m")
+            country_data = update_tor_country()
+            while country_data == False:
                 country_data = update_tor_country()
-                while country_data == False:
-                    country_data = update_tor_country()
-                reload_tor()
-                restart_tor()
-                input(f"Countries of tor has been updated with: {country_data}\nPress Enter to continue....")
+            reload_tor()
+            restart_tor()
+            input(f"Countries of Tor have been updated with: {country_data}\nPress Enter to continue....")
+        elif choise == "9":
+            start_tor()
+            input("Tor has been started\nPress Enter to continue...")
+        elif choise == "10":
+            stop_tor()
+            input("Tor has been stopped\nPress Enter to continue...")
+        elif choise == "11":
+            restart_tor()
+            input("Tor has been restarted\nPress Enter to continue...")
+        elif choise == "12":
+            reload_tor()
+            input("Tor has been reloaded\nPress Enter to continue...")
+        elif choise == "13":
+            status_tor()
+            input("\nPress Enter to continue...")
+        else:
+            print("Your input is invalid...")
+            input("Press Enter to continue...")
 
-            case "9":
-                start_tor()
-                input("Tor has been started\nPress Enter to continue...")
-            case "10":
-                stop_tor()
-                input("Tor has been stoped\nPress Enter to continue...")
-            case "11":
-                restart_tor()
-                input("Tor has been restarted\nPress Enter to continue...")
-            case "12":
-                reload_tor()
-                input("Tor has been reloaded\nPress Enter to continue...")
-            case "13":
-                status_tor()
-                input("\nPress Enter to continue...")
-            case _:
-                print("Your input is invalid...")
-                input("Press Enter to continue...")
-
-
-
-    
 if __name__ == "__main__":
     main()
